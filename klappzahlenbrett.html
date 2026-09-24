@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steampunk Split-Flap Matrix (6x22)</title>
+    <style>
+        @import url('https://googleapis.com');
+
+        :root {
+            --iron-dark: #191614;
+            --iron-light: #2d2825;
+            --copper-base: #a0522d;
+            --copper-bright: #d2691e;
+            --brass-bright: #e5b842;
+            --brass-dark: #947119;
+            --panel-bg: #0c0a09;
+            --bit-bg: #181412;
+            --text-light: #eae5df;
+        }
+
+        body {
+            background-color: #050403;
+            background-image: radial-gradient(circle, #1c1511 0%, #050403 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 35px;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Courier Prime', monospace;
+            padding: 20px;
+            color: var(--text-light);
+        }
+
+        /* Gemeinsames industrielles Gehäuse */
+        .steampunk-housing {
+            background: linear-gradient(135deg, var(--iron-dark) 0%, #0c0a09 100%);
+            border: 6px solid var(--copper-base);
+            box-shadow: 
+                inset 0 0 30px rgba(0,0,0,0.9),
+                0 25px 45px rgba(0,0,0,0.85),
+                0 0 0 3px var(--brass-dark);
+            position: relative;
+        }
+
+        /* Schwere Nieten-Reihen oben und unten */
+        .steampunk-housing::before {
+            content: '•   •   •   •   •   •   •   •   •   •   •   •   •   •   •   •   •   •   •   •   •';
+            position: absolute;
+            top: 4px; left: 0; right: 0;
+            font-size: 10px; color: var(--brass-bright);
+            letter-spacing: 14px; text-align: center; opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* ======================================================== */
+        /* MODUL 1: DAS MAIN-BOARD (ANZEIGE)                        */
+        /* ======================================================== */
+        .board-module {
+            padding: 45px 30px 30px 30px;
+            border-radius: 12px;
+            border: 8px solid var(--iron-light);
+            border-bottom: 14px solid var(--iron-dark);
+            box-shadow: 
+                inset 0 0 30px rgba(0,0,0,0.9),
+                0 20px 40px rgba(0,0,0,0.7),
+                0 0 0 2px var(--copper-base);
+        }
+
+        .brand-plate {
+            font-family: 'Special Elite', cursive;
+            font-size: 1.1rem;
+            color: var(--brass-bright);
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-shadow: 1px 1px 3px #000;
+            text-transform: uppercase;
+        }
+
+        /* Striktes Vestaboard-Raster: 6 Zeilen à 22 Module */
+        .vestaboard-grid {
+            display: grid;
+            grid-template-rows: repeat(6, 38px);
+            grid-template-columns: repeat(22, 26px);
+            gap: 5px;
+            background: var(--panel-bg);
+            padding: 18px;
+            border-radius: 6px;
+            border: 4px solid var(--copper-base);
+            box-shadow: inset 0 0 25px rgba(0,0,0,1);
+        }
+
+        /* Mechanisches Fallblatt-Modul ("Bit") */
+        .bit-module {
+            background: var(--bit-bg);
+            border-radius: 3px;
+            color: var(--text-light);
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.6);
+            border: 1px solid #110906;
+            text-transform: uppercase;
+            overflow: hidden;
+        }
+
+        /* Glühendes Messing für Zahlen & Sonderzeichen */
+        .bit-module.highlight {
+            color: var(--brass-bright);
+            text-shadow: 0 0 4px var(--brass-dark);
+        }
+
+        /* Mechanischer Spalt in der Mitte der Klappkarte */
+        .bit-module::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            height: 2px;
+            background: #000;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            z-index: 2;
+        }
+
+        /* ======================================================== */
+        /* MODUL 2: MASCHINEN-TERMINAL (BEDIENFELD)                  */
+        /* ======================================================== */
+        .control-terminal {
+            width: 670px;
+            padding: 35px 30px;
+            border-radius: 14px;
+            box-sizing: border-box;
+            border-top: 10px solid var(--copper-base);
+        }
+
+        .terminal-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 25px;
+        }
+
+        .input-bay {
+            background: rgba(5, 4, 3, 0.9);
+            border: 2px solid var(--iron-light);
+            padding: 18px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        }
+
+        .input-bay label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--copper-bright);
+            letter-spacing: 2px;
+            font-family: 'Special Elite', cursive;
+        }
+
+        textarea {
+            background: #050403;
+            border: 2px solid var(--copper-base);
+            border-radius: 4px;
+            color: var(--text-light);
+            font-family: 'Courier Prime', monospace;
+            font-size: 1.05rem;
+            padding: 12px;
+            outline: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+            resize: none;
+            height: 100px;
+            text-transform: uppercase;
+        }
+
+        .timer-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #92847a;
+        }
+
+        input[type="number"] {
+            background: #000;
+            border: 2px solid var(--brass-dark);
+            border-radius: 4px;
+            color: var(--brass-bright);
+            font-family: 'Courier Prime', monospace;
+            font-size: 1.1rem;
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            outline: none;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+        }
+
+        /* Tasten und Hebel-Steuerung */
+        .buttons-bay {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .slots-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.05s ease;
+            border-radius: 4px;
+            box-shadow: 0 5px 0 #050403, 0 5px 8px rgba(0,0,0,0.7);
+        }
+
+        button:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #050403, 0 1px 4px rgba(0,0,0,0.7);
+        }
+
+        /* Programmierbare Register-Tasten (1-5) */
+        .slot-btn {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 1.1rem;
+            background: linear-gradient(180deg, #3a322d 0%, #1a1512 100%);
+            border: 2px solid var(--iron-light);
+            color: #bfae9e;
+        }
+
+        .slot-btn.active {
+            background: linear-gradient(180deg, var(--copper-bright) 0%, #6e3007 100%);
+            border-color: var(--copper-base);
+            color: var(--text-light);
+        }
+
+        /* Schwere gusseiserne Hebelknöpfe */
+        .lever-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 0.95rem;
+            color: #ffffff;
+            letter-spacing: 1px;
+            border-radius: 6px;
+        }
+
+        #saveBtn {
+            background: linear-gradient(180deg, #3d4f3c 0%, #1b261b 100%);
+            border: 2px solid #283827;
+        }
+
+        #startStopBtn {
+            background: linear-gradient(180deg, #4c4642 0%, #211e1c 100%);
+            border: 2px solid #2d2927;
+            color: var(--text-light);
+        }
+
+        #startStopBtn.running {
+            background: linear-gradient(180deg, #a62b1e 0%, #4f110a 100%);
+            border: 2px solid #5c140c;
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            color: var(--brass-dark);
+            text-align: center;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MODUL 1: SPLIT-FLAP MATRIX (132 SYSTEM-BITS) -->
+    <div class="steampunk-housing board-module">
+        <div class="brand-plate">♥ Stream Information ♥</div>
+        <div class="vestaboard-grid" id="vestaboardGrid">
+            <!-- 132 Module werden dynamisch injiziert -->
+        </div>
+    </div>
+
+    <!-- MODUL 2: MASCHINEN-TERMINAL -->
+    <div class="steampunk-housing control-terminal">
+        <div class="terminal-grid">
+            
+            <!-- Eingabe und Chronometer-Intervall -->
+            <div class="input-bay">
+                <label for="boardInput">Matrix-Einspeisung (Max 132 Zeichen):</label>
+                <textarea id="boardInput" maxlength="132" placeholder="Geben Sie hier die alphanumerische Zeichenkette ein... ⚙"></textarea>
+                
+                                <div class="timer-row">
+                    <label for="intervalInput">Chronometer-Takt:</label>
+                    <input type="number" id="intervalInput" value="5" min="2" max="99">
+                    <span>Sekunden-Intervall</span>
+                </div>
+            </div>
+
+            <!-- Rechte Seite: Programm-Slots, Ausrichtung und Ablaufsteuerung -->
+            <div class="buttons-bay">
+                <div>
+                    <div style="font-size: 0.75rem; margin-bottom: 6px; color: var(--copper-bright); text-transform: uppercase; font-family: 'Special Elite', cursive;">Register-Auswahl:</div>
+                    <div class="slots-row">
+                        <button class="slot-btn active" onclick="selectSlot(1)">1</button>
+                        <button class="slot-btn" onclick="selectSlot(2)">2</button>
+                        <button class="slot-btn" onclick="selectSlot(3)">3</button>
+                        <button class="slot-btn" onclick="selectSlot(4)">4</button>
+                        <button class="slot-btn" onclick="selectSlot(5)">5</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="font-size: 0.75rem; margin-bottom: 6px; color: var(--copper-bright); text-transform: uppercase; font-family: 'Special Elite', cursive;">Text-Ausrichtung:</div>
+                    <div class="slots-row">
+                        <button class="slot-btn active" id="alignLeftBtn" onclick="setAlignment('left')">Links</button>
+                        <button class="slot-btn" id="alignCenterBtn" onclick="setAlignment('center')">Zentriert</button>
+                    </div>
+                </div>
+
+                <button class="lever-btn" id="saveBtn" onclick="saveCurrentSlot()">Matrix in Register sichern</button>
+                <button class="lever-btn" id="startStopBtn" onclick="toggleAutoCycle()">Taktgeber aktivieren</button>
+            </div>
+
+        </div>
+        <div class="status-text" id="statusText">Register 1 aktiv. Starten Sie den Taktgeber für den automatischen Umlauf.</div>
+    </div>
+
+    <!-- Zusätzliche CSS-Stile für den Zeilen-Editor, die dynamisch geladen werden -->
+    <style>
+        .terminal-grid { grid-template-columns: 2.2fr 1fr !important; width: 780px !important; }
+        .control-terminal { width: 840px !important; }
+        .line-editor-container { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+        .editor-line-row { display: flex; align-items: center; gap: 10px; background: #000; padding: 4px 8px; border-radius: 4px; border: 1px solid #33241b; }
+        .line-label { font-size: 0.75rem; color: var(--brass-dark); width: 60px; font-family: 'Special Elite', cursive; }
+        .line-input { background: transparent; border: none; color: var(--text-light); font-family: 'Courier Prime', monospace; font-size: 1.1rem; width: 240px; letter-spacing: 2px; outline: none; text-transform: uppercase; }
+        .line-counter { font-size: 0.7rem; color: #5a4f47; width: 40px; text-align: right; }
+    </style>
+
+    <script>
+        const ROWS = 6;
+        const COLS = 22;
+        const TOTAL_BITS = ROWS * COLS; 
+        const CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!?⚙+-/";
+
+        // Standard-Registertexte (jeder Block hat exakt 132 Zeichen)
+        let slots = {
+            1: "WILLKOMMEN BEIM SCHWER- INDUSTRIELLEN SPLIT-   FLAP BOARD. HIER KANN  JEDE GEHEIMBOTSCHAFT   PUNKTGENAU DARGESTELLTWERDEN. IND.MOD.40  ⚙ ",
+            2: "SYSTEMSTATUS: NOMINAL. DAMPFDRUCK: 4.8 BAR.  SPEISEWASSER-PUMPE AUF MAXIMUM. KONDENSATOR   STABIL. RELEIS-BAENKEOK. DRUCKVENTIL ZU. ⚙",
+            3: "ACHTUNG: KESSELHAUS 3 MELDET UNREGELMAESSIGETEMPERATURSWANKUNGEN.  DRUCKABLASS-VENTIL     MANUELL PRUEFEN.      SCHICHTWECHSEL JETZT!!",
+            4: "SPEICHER-REGISTER 4   BEREIT FUER MANUELLE  EINGABE. TEXT RECHTS  EINGEBEN UND MIT DEM  HEBEL IN DIESES       REGISTER SICHERN.     ",
+            5: "SPEICHER-REGISTER 5   BEREIT FUER MANUELLE  EINGABE. TEXT RECHTS  EINGEBEN UND MIT DEM  HEBEL IN DIESES       REGISTER SICHERN.     "
+        };
+
+        let currentSlot = 1;
+        let currentAlignment = 'left'; // 'left' oder 'center'
+        let cycleTimer = null;
+        let isCycling = false;
+        let currentTextOnBoard = "".padStart(TOTAL_BITS, " ");
+
+        const gridContainer = document.getElementById('vestaboardGrid');
+        const startStopBtn = document.getElementById('startStopBtn');
+        const statusText = document.getElementById('statusText');
+        const intervalInput = document.getElementById('intervalInput');
+
+        // Dynamische Erzeugung des 6-Zeilen-Editors im Bedienfeld anstelle der alten Textarea
+        const inputBay = document.querySelector('.input-bay');
+        // Entferne alte Textarea falls vorhanden
+        const oldTextarea = document.getElementById('boardInput');
+        if (oldTextarea) oldTextarea.remove();
+        
+        const editorContainer = document.createElement('div');
+        editorContainer.classList.add('line-editor-container');
+        
+        // Erzeuge 6 separate Zeilen-Eingabefelder
+        const lineInputs = [];
+        for (let r = 1; r <= ROWS; r++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('editor-line-row');
+            
+            const label = document.createElement('span');
+            label.classList.add('line-label');
+            label.innerText = `ZEILE ${r}:`;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.maxLength = COLS;
+            input.classList.add('line-input');
+            input.placeholder = "".padEnd(COLS, ".");
+            
+            const counter = document.createElement('span');
+            counter.classList.add('line-counter');
+            counter.innerText = `0/${COLS}`;
+            
+            input.addEventListener('input', () => {
+                input.value = input.value.toUpperCase();
+                counter.innerText = `${input.value.length}/${COLS}`;
+                if (!isCycling) {
+                    // Sofort-Vorschau generieren, wenn nicht im Auto-Modus
+                    transitionToText(buildTextFromOutputs());
+                }
+            });
+            
+            rowDiv.appendChild(label);
+            rowDiv.appendChild(input);
+            rowDiv.appendChild(counter);
+            editorContainer.appendChild(rowDiv);
+            lineInputs.push(input);
+        }
+        // Füge den neuen Editor ganz oben in die Input-Bay ein
+        inputBay.insertBefore(editorContainer, inputBay.firstChild);
+
+        // Matrix-Erzeugung oben auf dem Board (132 System-Bits)
+        const bitElements = [];
+        for (let i = 0; i < TOTAL_BITS; i++) {
+            const bit = document.createElement('div');
+            bit.classList.add('bit-module');
+            bit.innerText = " ";
+            gridContainer.appendChild(bit);
+            bitElements.push(bit);
+        }
+
+        // Setzt die Ausrichtung (linksbündig oder zentriert)
+        function setAlignment(mode) {
+            currentAlignment = mode;
+            document.getElementById('alignLeftBtn').classList.toggle('active', mode === 'left');
+            document.getElementById('alignCenterBtn').classList.toggle('active', mode === 'center');
+            
+            if (!isCycling) {
+                transitionToText(buildTextFromOutputs());
+            }
+        }
+
+        // Verarbeitet und formatiert die 6 Zeilen zu einem 132-Zeichen-String unter Beachtung der Ausrichtung
+        function formatLine(text, alignment) {
+            let trimmed = text.trim();
+            if (alignment === 'center') {
+                let space = COLS - trimmed.length;
+                let leftSpace = Math.floor(space / 2);
+                let rightSpace = space - leftSpace;
+                return "".padStart(leftSpace, " ") + trimmed + "".padEnd(rightSpace, " ");
+            } else {
+                return trimmed.padEnd(COLS, " ");
+            }
+        }
+
+        // Baut aus den aktuellen Eingaben der 6 Felder den Gesamttext
+        function buildTextFromOutputs() {
+            let combined = "";
+            for (let r = 0; r < ROWS; r++) {
+                combined += formatLine(lineInputs[r].value, currentAlignment);
+            }
+            return combined;
+        }
+
+        // Zerlegt einen 132-Zeichen-String wieder zurück in die 6 Eingabefelder
+        function populateEditorFromText(rawText) {
+            let cleanText = rawText.padEnd(TOTAL_BITS, " ");
+            for (let r = 0; r < ROWS; r++) {
+                let start = r * COLS;
+                let lineText = cleanText.substring(start, start + COLS).trim();
+                lineInputs[r].value = lineText;
+                
+                // Update den visuellen Counter für jedes Feld
+                const counter = lineInputs[r].nextSibling;
+                if (counter) counter.innerText = `${lineText.length}/${COLS}`;
+            }
+        }
+
+        // Lädt den gewünschten Speicherplatz ins Bedienfeld
+        function selectSlot(slotNum) {
+            currentSlot = slotNum;
+            const allSlotBtns = document.querySelectorAll('.buttons-bay .slots-row:first-of-type .slot-btn');
+            allSlotBtns.forEach((btn, idx) => {
+                btn.classList.toggle('active', (idx + 1) === slotNum);
+            });
+            
+            statusText.innerText = `Register ${slotNum} geladen.`;
+            populateEditorFromText(slots[slotNum]);
+            transitionToText(slots[slotNum]);
+        }
+
+        // Sichert den Inhalt aus dem Zeilen-Editor in das aktive Register
+        function saveCurrentSlot() {
+            let combinedText = buildTextFromOutputs();
+            slots[currentSlot] = combinedText;
+            statusText.innerText = `Datenstrom in Register ${currentSlot} fixiert!`;
+            transitionToText(combinedText);
+        }
+
+        // Führt das mechanische Durchrattern der Fallblätter aus
+        function transitionToText(targetText) {
+            let finalTarget = targetText.padEnd(TOTAL_BITS, " ").substring(0, TOTAL_BITS);
+            
+            for (let i = 0; i < TOTAL_BITS; i++) {
+                let currentCh = currentTextOnBoard[i];
+                let targetCh = finalTarget[i];
+                
+                if (currentCh !== targetCh) {
+                    animateSingleBit(i, targetCh);
+                }
+            }
+            currentTextOnBoard = finalTarget;
+        }
+
+        // Mechanischer Zufallslauf eines einzelnen Moduls
+        function animateSingleBit(index, targetChar) {
+            let rumbles = Math.floor(Math.random() * 9) + 4;
+            let count = 0;
+            
+            let interval = setInterval(() => {
+                if (count >= rumbles) {
+                    clearInterval(interval);
+                    bitElements[index].innerText = targetChar;
+                    bitElements[index].classList.toggle('highlight', /[0-9⚙+-/]/.test(targetChar));
+                } else {
+                    let randChar = CHARS[Math.floor(Math.random() * CHARS.length)];
+                    bitElements[index].innerText = randChar;
+                    bitElements[index].classList.toggle('highlight', /[0-9⚙+-/]/.test(randChar));
+                    count++;
+                }
+            }, 50);
+        }
+
+        // Startet / Stoppt den automatischen Chronometer-Wechsel
+        function toggleAutoCycle() {
+            if (isCycling) {
+                clearTimeout(cycleTimer);
+                cycleTimer = null;
+                isCycling = false;
+                startStopBtn.innerText = "Taktgeber aktivieren";
+                startStopBtn.classList.remove('running');
+                statusText.innerText = `Umlauf-Taktgeber deaktiviert.`;
+            } else {
+                isCycling = true;
+                startStopBtn.innerText = "Taktgeber stoppen";
+                startStopBtn.classList.add('running');
+                statusText.innerText = `Automatischer Umlauf aktiv...`;
+                runCycle();
+            }
+        }
+
+        function runCycle() {
+            if (!isCycling) return;
+            
+            let nextSlot = currentSlot + 1;
+            if (nextSlot > 5) nextSlot = 1;
+            selectSlot(nextSlot);
+
+            let delay = (parseInt(intervalInput.value) || 5) * 1000;
+            cycleTimer = setTimeout(runCycle, delay);
+        }
+
+        // Initialstart mit Register 1
+        selectSlot(1);
+    </script>
+</body>
+</html>
